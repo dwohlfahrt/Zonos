@@ -11,3 +11,5 @@ wheels/
 
 # Misc.
 .ipynb_checkpoints/
+
+df/audio/vm_outputs/*

@@ -6,14 +6,13 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: zonos_container
-    runtime: nvidia
+    # runtime: nvidia
     # network_mode: "host"
     ports:
       - "3000:3000"
     stdin_open: true
     tty: true
-    # command: ["python3", "gradio_interface.py"]
-    command: ["uvicorn", "--app-dir", "df", "sample:app", "--host", "0.0.0.0", "--port", "3000"]
+    command: ["uvicorn", "sample:app", "--host", "0.0.0.0", "--port", "3000"]
     environment:
-      - NVIDIA_VISIBLE_DEVICES=0
+      # - NVIDIA_VISIBLE_DEVICES=0
       - GRADIO_SHARE=False
