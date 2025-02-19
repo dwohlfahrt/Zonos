@@ -13,3 +13,5 @@ wheels/
 .ipynb_checkpoints/
 
 df/audio/vm_outputs/*
+
+*.DS_Store
