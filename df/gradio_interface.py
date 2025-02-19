@@ -205,8 +205,6 @@ def generate_audio(
 
 def build_interface():
     supported_models = []
-    if "transformer" in ZonosBackbone.supported_architectures:
-        supported_models.append("Zyphra/Zonos-v0.1-transformer")
 
     if "hybrid" in ZonosBackbone.supported_architectures:
         supported_models.append("Zyphra/Zonos-v0.1-hybrid")
@@ -215,6 +213,9 @@ def build_interface():
             "| The current ZonosBackbone does not support the hybrid architecture, meaning only the transformer model will be available in the model selector.\n"
             "| This probably means the mamba-ssm library has not been installed."
         )
+
+    if "transformer" in ZonosBackbone.supported_architectures:
+        supported_models.append("Zyphra/Zonos-v0.1-transformer")
 
     with gr.Blocks() as demo:
         with gr.Row():
