@@ -11,9 +11,9 @@ services:
     stdin_open: true
     tty: true
     # command: ["python3", "gradio_interface.py"]
-    command: ["uvicorn", "--app-dir", "df", "sample:app", "--host", "0.0.0.0", "--port", "3000"]
+    command: ["uvicorn", "--app-dir", "df", "run:app", "--host", "0.0.0.0", "--port", "3000"]
     environment:
       - NVIDIA_VISIBLE_DEVICES=0
       - GRADIO_SHARE=False
     volumes:
-      - .:/app
+      - ./cache:/root/.cache/

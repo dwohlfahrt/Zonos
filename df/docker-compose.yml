@@ -12,7 +12,11 @@ services:
       - "3000:3000"
     stdin_open: true
     tty: true
-    command: ["uvicorn", "sample:app", "--host", "0.0.0.0", "--port", "3000"]
+    command: ["uvicorn", "run:app", "--host", "0.0.0.0", "--port", "3000"]
     environment:
       # - NVIDIA_VISIBLE_DEVICES=0
       - GRADIO_SHARE=False
+    volumes:
+      - ./df:/app
+      - ./cache:/root/.cache/
+    working_dir: /app

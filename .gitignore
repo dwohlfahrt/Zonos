@@ -15,3 +15,7 @@ wheels/
 df/audio/vm_outputs/*
 
 *.DS_Store
+
+*.code-workspace
+
+cache/*

@@ -1,10 +1,11 @@
-import wave
+import base64
 import io
-import math
 import torch
 import torchaudio
-import csv
-import os
+# import wave
+# import math
+# import csv
+# import os
 import gradio as gr
 from zonos.model import Zonos
 from zonos.conditioning import make_cond_dict
@@ -12,88 +13,14 @@ from zonos.utils import DEFAULT_DEVICE as device
 from fastapi import FastAPI, Response
 from pydantic import BaseModel
 from gradio_interface import build_interface
-import base64
+from zyphra_api_interface import build_interface as build_zyphra_interface
+
 
 model = "Zyphra/Zonos-v0.1-hybrid"
 # model = "Zyphra/Zonos-v0.1-transformer"
 model = Zonos.from_pretrained(model, device=device)
 
-# wav, sampling_rate = torchaudio.load("df/audio/cloning_samples/paras_voice.wav")
-# wav_derek, sampling_rate_derek = torchaudio.load("df/audio/cloning_samples/derek_voice.wav")
-
-# speaker = model.make_speaker_embedding(wav, sampling_rate)
-# speaker_derek = model.make_speaker_embedding(wav_derek, sampling_rate_derek)
-
 max_new_tokens = 86 * 30
-
-# columns = {
-#     "first_name": {
-#         "col": "INPUT_FIRST_NAME",
-#         "speaker_noised": True,
-#         "dnsmos_ovrl": 4.0,
-#         "fmax": 24000,
-#         "vq_val": 0.78,
-#         "pitch_std": 39,
-#         "speaking_rate": 17,
-#         "cfg_scale": 2.0,
-#         "min_p": 0.15,
-#         "seed": 83952001,
-#         "emotions": {
-#             "happiness": 0.35,
-#             "sadness": 0.16,
-#             "disgust": 0.07,
-#             "fear": 0.05,
-#             "surprise": 0.05,
-#             "anger": 0.12,
-#             "other": 0.05,
-#             "neutral": 0.3
-#         }
-#     },
-#     "value": {
-#         "col": "RI Total Value",
-#         "speaker_noised": True,
-#         "dnsmos_ovrl": 4.0,
-#         "fmax": 24000,
-#         "vq_val": 0.78,
-#         "pitch_std": 39,
-#         "speaking_rate": 17,
-#         "cfg_scale": 2.0,
-#         "min_p": 0.15,
-#         "seed": 83952001,
-#         "emotions": {
-#             "happiness": 0.35,
-#             "sadness": 0.16,
-#             "disgust": 0.07,
-#             "fear": 0.05,
-#             "surprise": 0.05,
-#             "anger": 0.12,
-#             "other": 0.05,
-#             "neutral": 0.3
-#         }
-#     },
-#     "county": {
-#         "col": "County",
-#         "speaker_noised": True,
-#         "dnsmos_ovrl": 4.0,
-#         "fmax": 24000,
-#         "vq_val": 0.78,
-#         "pitch_std": 39,
-#         "speaking_rate": 17,
-#         "cfg_scale": 2.0,
-#         "min_p": 0.15,
-#         "seed": 83952001,
-#         "emotions": {
-#             "happiness": 0.35,
-#             "sadness": 0.16,
-#             "disgust": 0.07,
-#             "fear": 0.05,
-#             "surprise": 0.05,
-#             "anger": 0.12,
-#             "other": 0.05,
-#             "neutral": 0.3
-#         }
-#     }
-# }
 
 class VMRequest(BaseModel):
     text: str
@@ -103,7 +30,6 @@ class VMRequest(BaseModel):
     vq_val: float = 0.78
     pitch_std: float = 39.0
     speaking_rate: float = 17.0
-    cfg_scale: float = 2.0
     min_p: float = 0.15
     seed: int = 83952001
     emotions: dict = {
@@ -120,7 +46,6 @@ class VMRequest(BaseModel):
     cfg_scale: float = 2.0
     top_p: float = 0.9
     min_k: int = 1024
-    min_p: float = 1.0
     linear: float = 2.0
     confidence: float = 2.0
     quadratic: float = 2.0
@@ -204,6 +129,88 @@ def generate_audio(seed, text, language, speaker, emotion, vq_val, fmax, pitch_s
     return buffer_
 
 app = gr.mount_gradio_app(app, build_interface(), path="/gradio")
+app = gr.mount_gradio_app(app, build_zyphra_interface(), path="/zyphra")
+
+
+
+
+
+# wav, sampling_rate = torchaudio.load("df/audio/cloning_samples/paras_voice.wav")
+# wav_derek, sampling_rate_derek = torchaudio.load("df/audio/cloning_samples/derek_voice.wav")
+
+# speaker = model.make_speaker_embedding(wav, sampling_rate)
+# speaker_derek = model.make_speaker_embedding(wav_derek, sampling_rate_derek)
+
+
+
+# columns = {
+#     "first_name": {
+#         "col": "INPUT_FIRST_NAME",
+#         "speaker_noised": True,
+#         "dnsmos_ovrl": 4.0,
+#         "fmax": 24000,
+#         "vq_val": 0.78,
+#         "pitch_std": 39,
+#         "speaking_rate": 17,
+#         "cfg_scale": 2.0,
+#         "min_p": 0.15,
+#         "seed": 83952001,
+#         "emotions": {
+#             "happiness": 0.35,
+#             "sadness": 0.16,
+#             "disgust": 0.07,
+#             "fear": 0.05,
+#             "surprise": 0.05,
+#             "anger": 0.12,
+#             "other": 0.05,
+#             "neutral": 0.3
+#         }
+#     },
+#     "value": {
+#         "col": "RI Total Value",
+#         "speaker_noised": True,
+#         "dnsmos_ovrl": 4.0,
+#         "fmax": 24000,
+#         "vq_val": 0.78,
+#         "pitch_std": 39,
+#         "speaking_rate": 17,
+#         "cfg_scale": 2.0,
+#         "min_p": 0.15,
+#         "seed": 83952001,
+#         "emotions": {
+#             "happiness": 0.35,
+#             "sadness": 0.16,
+#             "disgust": 0.07,
+#             "fear": 0.05,
+#             "surprise": 0.05,
+#             "anger": 0.12,
+#             "other": 0.05,
+#             "neutral": 0.3
+#         }
+#     },
+#     "county": {
+#         "col": "County",
+#         "speaker_noised": True,
+#         "dnsmos_ovrl": 4.0,
+#         "fmax": 24000,
+#         "vq_val": 0.78,
+#         "pitch_std": 39,
+#         "speaking_rate": 17,
+#         "cfg_scale": 2.0,
+#         "min_p": 0.15,
+#         "seed": 83952001,
+#         "emotions": {
+#             "happiness": 0.35,
+#             "sadness": 0.16,
+#             "disgust": 0.07,
+#             "fear": 0.05,
+#             "surprise": 0.05,
+#             "anger": 0.12,
+#             "other": 0.05,
+#             "neutral": 0.3
+#         }
+#     }
+# }
 
 # with open('exports/vm_drop_1.csv') as f:
 #     reader = csv.DictReader(f)
